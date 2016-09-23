@@ -4,14 +4,9 @@ library(data.table)
 library(stringr)
 library(purrr)
 
-testemail <- data.table(first=c("Jacob", "Adam", "Farrel", "Jennifer"), last=c("Buchinsky", "Buchinsky", "Buchinsky", "Buchinsky"), email=c("jacob.buchinsky@gmail.com", "adam.s.buchinsky@gmail.com", "farrel.buchinsky@ahn.org", "jbuchinsky@gmail.com"), owe=c(0.53, 0.54, 0.25, 1.65))
+testemail <- data.table(first=c("Jacob", "Adam", "Farrel", "Jennifer"), last=c("Buchinsky", "Buchinsky", "Buchinsky", "Buchinsky"), To=c("jacob.buchinsky@gmail.com", "adam.s.buchinsky@gmail.com", "farrel.buchinsky@ahn.org", "jbuchinsky@gmail.com"), owe=c(0.53, 0.54, 0.25, 1.65), From = "Farrel Buchinsky<fjbuch@gmail.com")
 
-testemail[, body:=str_c("Dear ", first, "
-												I was going through Quicken and it looks as if I owe you ", owe, " USD. Is that possible. If you think this question is odd then you are correct. I am just trying something out.
-												Farrel")]
 
-cat("Dear ", "first", "\n I was going through Quicken and it looks as if I owe you ", "5", " USD. Is that possible. If you think this question is odd then you are correct. I am just trying something out.
-			Farrel")
 
 body <- "Dear %s
 
@@ -21,20 +16,24 @@ Bye
 Farrel"
 testemail[, body:=sprintf(body, first, owe)]
 
-purrr::pmap(mime(
-	To = "jbuchinsky@gmail.com",
-	From = "fjbuch@gmail.com",
-	Subject = "this is just a gmailr test",
-	body = "Can you hear me now?")
-))
-dat  <- mime(
-	To = "jbuchinsky@gmail.com",
-	From = "fjbuch@gmail.com",
-	Subject = "this is just a gmailr test",
-	body = "Can you hear me now?")
-send_message(test_email)
+getreadyemail <- testemail[, list(To, From, Subject = "Do I owe you money", body)]
 
-class(dat)
+emails <- pmap(.l = getreadyemail, .f = mime)
+map(.x = emails, .f = send_message)
+
+# 	To = "jbuchinsky@gmail.com",
+# 	From = "fjbuch@gmail.com",
+# 	Subject = "this is just a gmailr test",
+# 	body = "Can you hear me now?")
+# ))
+# dat  <- mime(
+# 	To = "jbuchinsky@gmail.com",
+# 	From = "fjbuch@gmail.com",
+# 	Subject = "this is just a gmailr test",
+# 	body = "Can you hear me now?")
+# send_message(test_email)
+
+
 
 check.details.reminder[, emailsend := mime( To = email, From  = "fjbuch@gmail.com", Subject = "You have not yet checked your details", body = str_c("Dear ", first, ", Six collaborators have entered the date (yyyy-mm-dd) on which they checked their details on the collaborators spreadhseet. https://docs.google.com/spreadsheets/d/1h01etGN9mrN6Tu5rlE_A0w027sC_2KR2LE7BZpRuoaM/edit?usp=sharing    You were not one of them. The abstract will be submitted on Monday 2016-09-12. Please make sure I have correct information on you. If you encounter an error please edit the spreadsheet directly. Feel free to email me or call me on my mobile (412) 567-7870 if you have any questions. Thanks, Farrel"))]
 
