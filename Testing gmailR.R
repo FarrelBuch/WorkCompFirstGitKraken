@@ -5,7 +5,7 @@ library(stringr)
 library(purrr)
 
 
-#trying out Friday, 23 Sep 2016 17:19 and all that
+#trying out Friday, 23 Sep 2016 17:19 and all that and what's more I need it Friday, 23 Sep 2016 17:29
 
 testemail <- data.table(first=c("Jacob", "Adam", "Farrel", "Jennifer"), last=c("Buchinsky", "Buchinsky", "Buchinsky", "Buchinsky"), To=c("jacob.buchinsky@gmail.com", "adam.s.buchinsky@gmail.com", "farrel.buchinsky@ahn.org", "jbuchinsky@gmail.com"), owe=c(0.53, 0.54, 0.25, 1.65), From = "Farrel Buchinsky<fjbuch@gmail.com")
 
